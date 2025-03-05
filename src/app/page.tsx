@@ -1,13 +1,14 @@
 "use client"
 
 import { api } from "~/trpc/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import QRCode from "qrcode"
 
 export default function Home() {
 
   const [qr, setQr] = useState("")
-  const mutation = api.package.makeReservation.useMutation({
+  const { data: cityList, isLoading } = api.location.getCities.useQuery()
+  const reservationMutation = api.locker.makeReservation.useMutation({
     onSuccess(data) {
       QRCode.toDataURL(data).then(setQr)
     }
@@ -25,12 +26,20 @@ export default function Home() {
         (<button
           type="submit"
           className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
-          onClick={() => mutation.mutate()}
+          onClick={() => reservationMutation.mutate()}
         >
           Recibir paquete
         </button>)
       }
-
+      <ul>
+        {isLoading ?
+          (<div> loading cities</div>) :
+          (cityList!.map(c => {
+            return (<li key={c}> {c} </li>)
+          }
+          ))
+        }
+      </ul>
     </main>
   );
 }

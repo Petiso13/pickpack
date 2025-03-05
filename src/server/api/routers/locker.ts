@@ -1,7 +1,6 @@
-import QRCode from "qrcode";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const packageRouter = createTRPCRouter({
+export const lockerRouter = createTRPCRouter({
   makeReservation: publicProcedure
     .mutation(() => {
       let qrString = ""
@@ -12,5 +11,5 @@ export const packageRouter = createTRPCRouter({
     }),
 });
 
-export type PackageRouter = typeof packageRouter
+export type PackageRouter = typeof lockerRouter
 
